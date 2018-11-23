@@ -1,0 +1,44 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+    simple:
+        format: "%(asctime)s - %(module)12s - %(levelname)s - %(message)s"
+    debug_format:
+        format: "%(funcName)15s - %(lineno)d - %(levelname)s - %(message)s"
+    console_format:
+        format: "%(name)8s > %(message)s"
+    error_format:
+        format: "%(levelname)s <PID %(process)d:%(processName)s> %(name)s.%(funcName)s(): %(message)s"
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: console_format
+        stream: ext://sys.stdout
+
+    info_file_handler:
+        () : __main__.dedalus_handler
+        level: DEBUG
+        formatter: simple
+
+    error_file_handler:
+        () : __main__.error_handler
+        level: ERROR
+        formatter: error_format
+
+    network_handler:
+        () : __main__.network_handler
+        level: DEBUG
+        formatter: simple
+
+loggers:
+    dedalus_logger:
+        level: DEBUG
+        handlers: [console]
+        propagate: false
+
+root:
+    level: ERROR
+    handlers: [console, info_file_handler, error_file_handler]
